@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Sparta</string>
+    <string name="action_settings">Settings</string>
+
+    <!--Login Activity Strings-->
+    <string name="login_title1">Smart </string>
+    <string name="login_title2">Parking</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_name">Fullname</string>
+    <string name="err_msg_email">Enter a valid email address</string>
+    <string name="err_msg_password">Enter a password</string>
+    <string name="btn_login">LOGIN</string>
+    <string name="btn_link_to_register">CREATE NEW ACCOUNT</string>
+    <string name="title_activity_registration">RegistrationActivity</string>
+
+    <!--Register Activity Strings-->
+    <string name="btn_register">REGISTER</string>
+    <string name="btn_link_to_login">Already registered! Login Me.</string>
+    <string name="hint_password_confirm">Password Confirmation</string>
+    <string name="err_msg_password_confirmation">Your password doesn\'t match</string>
+    <string name="title_activity_home">HomeActivity</string>
+
+    <!--Home Activity Strings-->
+    <string name="jabatan_profil">Mahasiswa Teknologi Informasi</string>
+    <string name="title_activity_detail_home">DetailHomeActivity</string>
+    <string name="title_activity_park_now">Map</string>
+</resources>

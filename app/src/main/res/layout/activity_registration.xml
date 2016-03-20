@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@drawable/login_bg"
+    tools:context="id.ac.ugm.wg.smartcity.sparta.RegistrationActivity">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/alpha_primary"
+        android:orientation="vertical"
+        android:padding="10dp" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="0dip"
+            android:layout_weight="0.1"
+            android:layout_marginTop="30dp"
+            >
+
+        </RelativeLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="0dip"
+            android:layout_weight="0.55"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:id="@+id/LLRegistrationFields">
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/TILfullname"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:textColorHint="@color/text_white"
+                android:textColorHighlight="@color/text_white"
+                >
+                <EditText
+                    android:id="@+id/name"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:textSize="14sp"
+                    android:padding="10dp"
+                    android:singleLine="true"
+                    android:hint="@string/hint_name"
+                    android:drawableLeft="@drawable/ic_logo_user"
+                    android:textColorHint="@color/text_white"
+                    android:textColor="@color/text_white"
+                    android:backgroundTint="@color/text_white"/>
+            </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/TILemail"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:textColorHint="@color/text_white"
+                android:textColorHighlight="@color/text_white"
+                >
+                <EditText
+                    android:id="@+id/email"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    android:textSize="14sp"
+                    android:padding="10dp"
+                    android:singleLine="true"
+                    android:hint="@string/hint_email"
+                    android:drawableLeft="@drawable/ic_logo_email"
+                    android:textColorHint="@color/text_white"
+                    android:textColor="@color/text_white"
+                    android:backgroundTint="@color/text_white"/>
+            </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/TILpassword"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:textColorHint="@color/text_white"
+                android:textColorHighlight="@color/text_white"
+                >
+                <EditText
+                    android:id="@+id/password"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:textSize="14sp"
+                    android:padding="10dp"
+                    android:singleLine="true"
+                    android:hint="@string/hint_password"
+                    android:drawableLeft="@drawable/ic_logo_password"
+                    android:textColorHint="@color/text_white"
+                    android:textColor="@color/text_white"
+                    android:backgroundTint="@color/text_white"/>
+            </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/TILpasswordConfirm"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:textColorHint="@color/text_white"
+                android:textColorHighlight="@color/text_white"
+                >
+                <EditText
+                    android:id="@+id/passwordConfirm"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:textSize="14sp"
+                    android:padding="10dp"
+                    android:singleLine="true"
+                    android:hint="@string/hint_password_confirm"
+                    android:drawableLeft="@drawable/ic_logo_password"
+                    android:textColorHint="@color/text_white"
+                    android:textColor="@color/text_white"
+                    android:backgroundTint="@color/text_white"/>
+            </android.support.design.widget.TextInputLayout>
+
+        </LinearLayout>
+
+        <!--Linear Layout Buttons-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_weight="0.35"
+            android:orientation="vertical"
+            android:layout_gravity="end"
+            android:paddingLeft="33dp"
+            android:paddingRight="33dp">
+            <!-- Login Button -->
+            <Button
+                android:id="@+id/btnRegister"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dip"
+                android:background="@color/btn_login_bg"
+                android:text="@string/btn_register"
+                android:textColor="@color/text_white" />
+
+            <!-- Link to Login Screen -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <Button
+                    android:id="@+id/btnLinkToLoginScreen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="17dip"
+                    android:layout_centerHorizontal="true"
+                    android:padding="10dp"
+                    android:background="@android:color/transparent"
+                    android:text="@string/btn_link_to_login"
+                    android:textColor="@color/text_white"
+                    android:textSize="10dp" />
+            </RelativeLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>
