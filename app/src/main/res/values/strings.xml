@@ -25,4 +25,10 @@
     <string name="jabatan_profil">Mahasiswa Teknologi Informasi</string>
     <string name="title_activity_detail_home">DetailHomeActivity</string>
     <string name="title_activity_park_now">Map</string>
+    <string name="title_activity_add_park">AddParkActivity</string>
+
+    <!--AddPark Activity Strings-->
+    <string name="hint_id_lahan">ID</string>
+    <string name="hint_numPoints">points</string>
+    <string name="btn_submit">SUBMIT</string>
 </resources>

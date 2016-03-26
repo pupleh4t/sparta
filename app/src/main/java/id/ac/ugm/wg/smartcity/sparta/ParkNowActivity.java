@@ -290,9 +290,6 @@ public class ParkNowActivity extends FragmentActivity implements OnMapReadyCallb
         LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         Toast.makeText(getApplicationContext(), "Connected to Location Service", Toast.LENGTH_SHORT).show();
         Log.i(TAGi, "GoogleApiClient connection has been connected");
-
-
-        //startLocationUpdates();
     }
 
     @Override
@@ -387,7 +384,6 @@ public class ParkNowActivity extends FragmentActivity implements OnMapReadyCallb
                 SnackBarToast(view, e.getMessage());
             }
             hideDialog();
-
         }
     }
 
@@ -500,7 +496,8 @@ public class ParkNowActivity extends FragmentActivity implements OnMapReadyCallb
                     }
 
                     LatLngSphericalTools latLngSphericalTools = new LatLngSphericalTools();
-                    LatLng midPointLatLng = latLngSphericalTools.getMidPoint(arrayListLatLng);
+                    latLngSphericalTools.setArrayListLatLng(arrayListLatLng);
+                    LatLng midPointLatLng = latLngSphericalTools.getMidPoint();
                     double midPointRange = latLngSphericalTools.getRangeMidPoint();
 
                     Toast.makeText(ParkNowActivity.this, new StringBuilder("The distance is " + String.valueOf(midPointRange)), Toast.LENGTH_SHORT).show();

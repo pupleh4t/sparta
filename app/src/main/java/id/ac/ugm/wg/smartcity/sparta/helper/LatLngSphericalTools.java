@@ -4,6 +4,7 @@ import android.test.suitebuilder.annotation.LargeTest;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -15,6 +16,8 @@ public class LatLngSphericalTools {
     LatLng midLatLng;
     double R = 6371000;
     double Rarea = 0;
+    LatLng fromLatLng;
+    LatLng toLatLng;
 
     ArrayList<LatLng> ArrayListLatLng;
 
@@ -39,11 +42,16 @@ public class LatLngSphericalTools {
     public LatLngSphericalTools(){
     }
 
-    public double getDistance(LatLng fromLatLng, LatLng toLatLng){
-        double φ1 = Math.toRadians(fromLatLng.latitude);
-        double φ2 = Math.toRadians(toLatLng.latitude);
-        double λ1 = Math.toRadians(fromLatLng.longitude);
-        double λ2 = Math.toRadians(toLatLng.longitude);
+    public void setTwoLatLng(LatLng fromLatLng, LatLng toLatLng){
+        this.fromLatLng = fromLatLng;
+        this.toLatLng = toLatLng;
+    }
+
+    public double getDistance(){
+        double φ1 = Math.toRadians(this.fromLatLng.latitude);
+        double φ2 = Math.toRadians(this.toLatLng.latitude);
+        double λ1 = Math.toRadians(this.fromLatLng.longitude);
+        double λ2 = Math.toRadians(this.toLatLng.longitude);
 
         double Δφ = φ2 - φ1;
         double Δλ = λ2 - λ1;
@@ -59,10 +67,12 @@ public class LatLngSphericalTools {
         return d;
     }
 
-    public LatLng getMidPoint(ArrayList<LatLng> arrayLatLng){
-        this.ArrayListLatLng = arrayLatLng;
+    public void setArrayListLatLng(ArrayList<LatLng> arrayListLatLng){
+        this.ArrayListLatLng = arrayListLatLng;
+    }
 
-        double totalWeight = arrayLatLng.size();
+    public LatLng getMidPoint(){
+        double totalWeight = this.ArrayListLatLng.size();
 
         double x, y, z;
 
@@ -71,7 +81,7 @@ public class LatLngSphericalTools {
         double Z = 0;
 
         for(int i=0; i<totalWeight; i++){
-            LatLng latLng = arrayLatLng.get(i);
+            LatLng latLng = this.ArrayListLatLng.get(i);
             x = Math.cos(Math.toRadians(latLng.latitude)) * Math.cos(Math.toRadians(latLng.longitude));
             y = Math.cos(Math.toRadians(latLng.latitude)) * Math.sin(Math.toRadians(latLng.longitude));
             z = Math.sin(Math.toRadians(latLng.latitude));
@@ -102,14 +112,18 @@ public class LatLngSphericalTools {
 
         for (int i=0; i<ArrayListLatLng.size(); i++){
             LatLng toLatLng = ArrayListLatLng.get(i);
-            double Rtemp = this.getDistance(this.midLatLng, toLatLng);
+            LatLngSphericalTools temp = new LatLngSphericalTools();
+            temp.setTwoLatLng(this.midLatLng, toLatLng);
+            double Rtemp = temp.getDistance();
             if (Rtemp>Rmax){
                 Rmax = Rtemp;
             }
         }
-
         Rarea = Rmax;
-
         return Rarea;
+    }
+
+    public ArrayList<LatLng> getIntersectionPoints(){
+        return this.ArrayListLatLng;
     }
 }

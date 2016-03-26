@@ -54,7 +54,11 @@
 
         <activity
             android:name=".ParkNowActivity"
-            android:label="@string/title_activity_park_now"></activity>
+            android:label="@string/title_activity_park_now" />
+        <activity
+            android:name=".AddParkActivity"
+            android:label="@string/title_activity_add_park"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
