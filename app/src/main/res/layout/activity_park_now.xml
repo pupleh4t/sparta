@@ -51,7 +51,7 @@
                 android:paddingStart="15dp"
                 android:textColorHint="@color/text_white"
                 >
-                <EditText
+                <!--<EditText
                     android:id="@+id/ETplace"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -63,6 +63,19 @@
                     android:backgroundTint="@color/text_white"
                     android:padding="10dp"
                     android:singleLine="true"
+                    android:drawableStart="@drawable/ic_logo_place"
+                    />-->
+                <id.ac.ugm.wg.smartcity.sparta.widgets.DelayAutoCompleteTextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ETplace"
+                    android:imeOptions="flagNoExtractUi|actionSearch"
+                    android:inputType="textCapSentences"
+                    android:textColor="@color/text_white"
+                    android:layout_gravity="center_vertical"
+                    android:hint="Enter a name of a place"
+                    android:padding="10dp"
+                    android:dropDownWidth="fill_parent"
                     android:drawableStart="@drawable/ic_logo_place"
                     />
             </android.support.design.widget.TextInputLayout>

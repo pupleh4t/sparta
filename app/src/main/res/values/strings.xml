@@ -31,4 +31,5 @@
     <string name="hint_id_lahan">ID</string>
     <string name="hint_numPoints">points</string>
     <string name="btn_submit">SUBMIT</string>
+    <string name="title_activity_test">TestActivity</string>
 </resources>

@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,14 +59,19 @@ import id.ac.ugm.wg.smartcity.sparta.app.AppConfig;
 import id.ac.ugm.wg.smartcity.sparta.helper.LatLngSphericalTools;
 import id.ac.ugm.wg.smartcity.sparta.helper.MapStateManager;
 import id.ac.ugm.wg.smartcity.sparta.app.AppController;
+import id.ac.ugm.wg.smartcity.sparta.widgets.DelayAutoCompleteTextView;
+import id.ac.ugm.wg.smartcity.sparta.widgets.GeoAutoCompleteAdapter;
+import id.ac.ugm.wg.smartcity.sparta.widgets.GeoSearchResult;
 
 public class ParkNowActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
-
     private static final String TAGi = "INFO";
     private GoogleMap mMap;
     private TextInputLayout TILplace;
-    private EditText ETplace;
+    private Integer THRESHOLD = 2;
+    private DelayAutoCompleteTextView ETplace;
+
     private MapStateManager mgr;
+    private float zoomTemp;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private Marker marker, markerDraggable;
@@ -108,9 +114,8 @@ public class ParkNowActivity extends FragmentActivity implements OnMapReadyCallb
                 address.setLatitude(-7.765808);
                 address.setLongitude(110.371645);
                 address.setLocality("Vacant");
-                setMarkerDraggable(address.getLocality(),address.getCountryName(),address.getLatitude(),address.getLongitude());
-                /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();*/
+                setMarkerDraggable(address.getLocality(), address.getCountryName(), address.getLatitude(), address.getLongitude());
+
             }
         });
         FloatingActionButton fab2 = (FloatingActionButton) findViewById(R.id.fab2);
@@ -158,9 +163,49 @@ public class ParkNowActivity extends FragmentActivity implements OnMapReadyCallb
         });
 
         TILplace = (TextInputLayout) findViewById(R.id.TILplace);
-        ETplace = (EditText) findViewById(R.id.ETplace);
-
+        ETplace = (DelayAutoCompleteTextView) findViewById(R.id.ETplace);
+        ETplace.setThreshold(THRESHOLD);
+        ETplace.setAdapter(new GeoAutoCompleteAdapter(this));
+        ETplace.setDropDownWidth(getResources().getDisplayMetrics().widthPixels);
+        ETplace.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                GeoSearchResult result = (GeoSearchResult) parent.getItemAtPosition(position);
+                ETplace.setText(result.getAddress());
+            }
+        });
+        //ETplace = (EditText) findViewById(R.id.ETplace);
         ETplace.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                    pDialog.setMessage("Searching . . .");
+                    showDialog();
+                    try {
+                        Geocoder gc = new Geocoder(getApplicationContext());
+                        List<Address> list = gc.getFromLocationName(ETplace.getText().toString(), 1);
+                        if (list.get(0) == null) {
+                            Toast.makeText(getApplicationContext(), "NULL RESULT", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Address address = list.get(0);
+                            String locality = address.getAddressLine(0);
+                            String country = address.getCountryName();
+                            Toast.makeText(getApplicationContext(), locality, Toast.LENGTH_SHORT).show();
+                            Log.d("Deb", locality);
+                            LatLng userDefinedLocation = new LatLng(address.getLatitude(), address.getLongitude());
+                            mMap.moveCamera(CameraUpdateFactory.newLatLng(userDefinedLocation));
+
+                            setMarkerUser(locality, country, address.getLatitude(), address.getLongitude());
+                        }
+                    } catch (Exception e) {
+                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                    hideDialog();
+                }
+                return false;
+            }
+        });
+        /*ETplace.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_ENTER) {
@@ -189,7 +234,7 @@ public class ParkNowActivity extends FragmentActivity implements OnMapReadyCallb
                 }
                 return false;
             }
-        });
+        });*/
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -261,6 +306,15 @@ public class ParkNowActivity extends FragmentActivity implements OnMapReadyCallb
                 LatLng ll = marker.getPosition();
                 marker.setTitle("UPDATED");
                 marker.showInfoWindow();
+            }
+        });
+        mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+            @Override
+            public void onCameraChange(CameraPosition cameraPosition) {
+                if ((float) Math.round(cameraPosition.zoom) != zoomTemp) {
+                    Toast.makeText(getApplicationContext(), new StringBuilder("Zoom Level : " + Math.round(cameraPosition.zoom)), Toast.LENGTH_SHORT).show();
+                }
+                zoomTemp = Math.round(cameraPosition.zoom);
             }
         });
         mgr = new MapStateManager(this);
@@ -436,7 +490,6 @@ public class ParkNowActivity extends FragmentActivity implements OnMapReadyCallb
     }
 
     private void setMarkerArea(double lat, double lng, double radius, String title, String snippet){
-
         MarkerOptions options = new MarkerOptions()
                 .title(title)
                 .position(new LatLng(lat, lng))

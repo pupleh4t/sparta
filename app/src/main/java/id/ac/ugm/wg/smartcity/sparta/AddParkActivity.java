@@ -66,6 +66,7 @@ public class AddParkActivity extends AppCompatActivity implements OnMapReadyCall
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private MapStateManager mgr;
+    private float zoomTemp = 0;
     private ArrayList<Marker> markers;
     private Marker userMarker;
     private ProgressDialog pDialog;
@@ -190,6 +191,7 @@ public class AddParkActivity extends AppCompatActivity implements OnMapReadyCall
                 setMarker(latLng);
             }
         });
+
         mgr = new MapStateManager(this);
         mMap.setMapType(mgr.getMapType());
         CameraPosition position = mgr.getSavedCameraPosition();
