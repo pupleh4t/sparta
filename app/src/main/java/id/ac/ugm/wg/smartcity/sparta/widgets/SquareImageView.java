@@ -24,13 +24,13 @@ public class SquareImageView extends ImageView {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        int width = getMeasuredWidth();
+        int width = getResources().getDisplayMetrics().widthPixels;
         int height = getMeasuredHeight();
         if (width>height){
             width=height;
         } else {
             height=width;
         }
-        setMeasuredDimension(width, height);
+        setMeasuredDimension(width, width);
     }
 }

@@ -26,6 +26,13 @@
     <string name="title_activity_detail_home">DetailHomeActivity</string>
     <string name="title_activity_park_now">Map</string>
     <string name="title_activity_add_park">AddParkActivity</string>
+    
+    <!--DetailHome Activity Strings-->
+    <string name="hint_department">Department Name</string>
+    <string name="trailer_free_car_parking_space"> free parking spaces available</string>
+    <string name="trailer_max_car_parking_space"> parking spaces supported</string>
+    <string name="trailer_time"> WIB</string>
+    <string name="btn_go_to_map">OPEN DETAIL LOT</string>
 
     <!--AddPark Activity Strings-->
     <string name="hint_id_lahan">ID</string>

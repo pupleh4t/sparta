@@ -22,10 +22,10 @@
             app:expandedTitleMarginStart="48dp"
             app:expandedTitleMarginEnd="64dp"
             android:fitsSystemWindows="true">
-            <id.ac.ugm.wg.smartcity.sparta.widgets.SquareImageView
-                android:layout_height="fill_parent"
-                android:layout_width="fill_parent"
-                android:src="@drawable/dteti"
+            <ImageView
+                android:id="@+id/SIVcover"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
                 app:layout_collapseMode="parallax"
                 android:scaleType="centerCrop"
                 />
@@ -68,10 +68,11 @@
                         android:layout_weight="0.8"
                         android:paddingTop="15dp">
                         <TextView
+                            android:id="@+id/TVDepartmentName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Department of Electrical Engineering and Information Technology"
                             android:lineSpacingExtra="4dp"
+                            android:text="@string/hint_department"
                             android:textSize="18sp"/>
                     </RelativeLayout>
                 </LinearLayout>
@@ -94,15 +95,7 @@
                             android:id="@+id/TVFreeParkingSpace"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="20"
                             android:textSize="18sp"/>
-                        <TextView
-                            android:id="@+id/TVFPS2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text=" free parking spaces available"
-                            android:textSize="18sp"
-                            android:layout_toEndOf="@+id/TVFreeParkingSpace"/>
                     </RelativeLayout>
                 </LinearLayout>
                 <LinearLayout
@@ -124,15 +117,7 @@
                             android:id="@+id/TVMaxParkingSpace"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="90"
                             android:textSize="18sp"/>
-                        <TextView
-                            android:id="@+id/TVMPS2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text=" parking spaces supported"
-                            android:textSize="18sp"
-                            android:layout_toEndOf="@+id/TVMaxParkingSpace"/>
                     </RelativeLayout>
 
                 </LinearLayout>
@@ -155,15 +140,7 @@
                             android:id="@+id/TVOpenAt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="05:00"
                             android:textSize="18sp"/>
-                        <TextView
-                            android:id="@+id/TVOA1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text=" WIB"
-                            android:textSize="18sp"
-                            android:layout_toEndOf="@id/TVOpenAt"/>
                     </RelativeLayout>
                 </LinearLayout>
                 <LinearLayout
@@ -185,15 +162,7 @@
                             android:id="@+id/TVCloseAt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="18:00"
                             android:textSize="18sp"/>
-                        <TextView
-                            android:id="@+id/TVCA1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text=" WIB"
-                            android:textSize="18sp"
-                            android:layout_toEndOf="@id/TVCloseAt"/>
                     </RelativeLayout>
                 </LinearLayout>
                 <LinearLayout
@@ -215,7 +184,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:background="@color/transparent"
-                            android:text="Open Detail Lot"
+                            android:text="@string/btn_go_to_map"
                             android:textAllCaps="false"
                             android:padding="10dp"
                             />

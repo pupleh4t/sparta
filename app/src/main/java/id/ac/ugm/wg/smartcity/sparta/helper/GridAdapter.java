@@ -8,6 +8,11 @@ import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import id.ac.ugm.wg.smartcity.sparta.R;
 
 /**
@@ -15,21 +20,29 @@ import id.ac.ugm.wg.smartcity.sparta.R;
  */
 public class GridAdapter extends BaseAdapter {
     private Context mContext;
-    private final String[] parkingLotArray;
+    private static final String TAG_SISA_KAPASITAS_MOBIL = "sisa_kapasitas_mobil";
+    private static final String TAG_MAX_KAPASITAS_MOBIL = "max_kapasitas_mobil";
+    private static final String TAG_ALIAS = "alias";
 
-    public GridAdapter(Context c, String[] parkingLotArray) {
+    //private final String[] parkingLotArray;
+    private final ArrayList<HashMap<String,String>> parkingLotArrayList;
+    private HashMap<String, String> parkingLotHashMap;
+
+    public GridAdapter(Context c, ArrayList<HashMap<String, String>> parkingLotArrayList) {
         mContext = c;
-        this.parkingLotArray = parkingLotArray;
+        this.parkingLotArrayList = parkingLotArrayList;
     }
 
     public int getCount() {
-        return parkingLotArray.length;
+        return parkingLotArrayList.size();
     }
 
-    public Object getItem(int position) {
-        return null;
+    public HashMap<String, String> getItem(int position) {
+        parkingLotHashMap = parkingLotArrayList.get(position);
+        return parkingLotHashMap;
     }
 
+    @Override
     public long getItemId(int position) {
         return 0;
     }
@@ -41,9 +54,16 @@ public class GridAdapter extends BaseAdapter {
         if (convertView == null){
             grid = new View(mContext);
             grid = inflater.inflate(R.layout.grid_single, null);
-            TextView textView = (TextView) grid.findViewById(R.id.TVGridParkingLotAddress);
-            textView.setText(parkingLotArray[position]);
+
+            TextView alias = (TextView) grid.findViewById(R.id.TVGridParkingLotAddress);
+            TextView sisa = (TextView) grid.findViewById(R.id.TVGridParkingLotSpaceAvailable);
+            TextView max = (TextView) grid.findViewById(R.id.TVGridParkingLotMaxSpaceAvailable);
             RelativeLayout gridCell = (RelativeLayout) grid.findViewById(R.id.ParentLayoutGridCell);
+
+            alias.setText(parkingLotArrayList.get(position).get(TAG_ALIAS));
+            sisa.setText(parkingLotArrayList.get(position).get(TAG_SISA_KAPASITAS_MOBIL));
+            max.setText(parkingLotArrayList.get(position).get(TAG_MAX_KAPASITAS_MOBIL));
+
             if(position%4==0)
             {
                 gridCell.setBackgroundColor(grid.getResources().getColor(R.color.md_indigo_400));
