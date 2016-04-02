@@ -23,7 +23,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
         >
         <RelativeLayout
@@ -81,6 +81,7 @@
             android:layout_height="fill_parent"
             android:layout_above="@+id/Space"/>
     </RelativeLayout>
+
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

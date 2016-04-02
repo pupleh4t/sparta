@@ -20,27 +20,76 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>
-    <id.ac.ugm.wg.smartcity.sparta.widgets.DelayAutoCompleteTextView
-        android:id="@+id/geo_autocomplete"
+
+    <com.sothree.slidinguppanel.SlidingUpPanelLayout
+        xmlns:sothree="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/sliding_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:imeOptions="flagNoExtractUi|actionSearch"
-        android:inputType="textCapSentences"
-        android:background="@color/text_white"
-        android:hint="Enter a name of place"
-        android:layout_marginEnd="35dp"
-        android:layout_marginRight="35dp"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:layout_marginBottom="4dp"
-        android:padding="10dp"
-        android:dropDownWidth="fill_parent"
-        />
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        sothree:umanoPanelHeight="100dp"
+        sothree:umanoShadowHeight="4dp"
+        android:layout_marginTop="?attr/actionBarSize">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <id.ac.ugm.wg.smartcity.sparta.widgets.DelayAutoCompleteTextView
+                android:id="@+id/geo_autocomplete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="flagNoExtractUi|actionSearch"
+                android:inputType="textCapSentences"
+                android:background="@color/text_white"
+                android:hint="Enter a name of place"
+                android:layout_marginEnd="35dp"
+                android:layout_marginRight="35dp"
+                android:layout_marginTop="?attr/actionBarSize"
+                android:layout_marginBottom="4dp"
+                android:padding="10dp"
+                android:dropDownWidth="fill_parent"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Main Content"
+                android:textSize="16sp" />
+            <Button
+                android:id="@+id/btnShow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/geo_autocomplete"
+                android:text="SHOW"/>
+            <Button
+                android:id="@+id/btnHide"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="HIDE"
+                android:layout_below="@+id/btnShow"/>
+        </RelativeLayout>
+
+
+
+        <!--<TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center|top"
+            android:text="The Awesome Sliding Up Panel"
+            android:textSize="16sp" />-->
+        <include layout="@layout/sliding_panel_window"/>
+    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_dialog_email" />
+        app:layout_behavior="id.ac.ugm.wg.smartcity.sparta.behaviors.ReactiveToSlidingUpPanel"
+        android:layout_gravity="center_horizontal|center_vertical">
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fab_margin"
+            android:src="@android:drawable/ic_dialog_email" />
+    </RelativeLayout>
+
 
 </android.support.design.widget.CoordinatorLayout>

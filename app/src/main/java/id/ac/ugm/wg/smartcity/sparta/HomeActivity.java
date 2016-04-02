@@ -43,20 +43,6 @@ public class HomeActivity extends AppCompatActivity {
     SQLiteHandler db;
     private ProgressDialog pDialog;
 
-    private static final String TAG_KEY_ID_LAHAN = "id_lahan";
-    private static final String TAG_KEY_DESKRIPSI = "deskripsi";
-    private static final String TAG_KEY_ALIAS = "alias";
-    private static final String TAG_KEY_LATITUDE = "latitude";
-    private static final String TAG_KEY_LONGITUDE = "longitude";
-    private static final String TAG_KEY_SISA_KAPASITAS_MOBIL = "sisa_kapasitas_mobil";
-    //private static final String TAG_KEY_SISA_KAPASITAS_MOTOR = "sisa_kapasitas_mobil";
-    private static final String TAG_KEY_MAX_KAPASITAS_MOBIL = "max_kapasitas_mobil";
-    private static final String TAG_KEY_MAX_KAPASITAS_MOTOR = "max_kapasitas_motor";
-    private static final String TAG_KEY_JAM_BUKA = "jam_buka";
-    private static final String TAG_KEY_JAM_TUTUP = "jam_tutup";
-    private static final String TAG_KEY_LINK_GAMBAR = "link_gambar";
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -140,17 +126,17 @@ public class HomeActivity extends AppCompatActivity {
                         JSONObject item = (JSONObject)arrayLahan.get(i);
 
                         HashMap<String, String> lahan = new HashMap<>();
-                        lahan.put(TAG_KEY_ID_LAHAN, item.getString(TAG_KEY_ID_LAHAN));
-                        lahan.put(TAG_KEY_DESKRIPSI, item.getString(TAG_KEY_DESKRIPSI));
-                        lahan.put(TAG_KEY_ALIAS, item.getString(TAG_KEY_ALIAS));
-                        lahan.put(TAG_KEY_LATITUDE, item.getString(TAG_KEY_LATITUDE));
-                        lahan.put(TAG_KEY_LONGITUDE, item.getString(TAG_KEY_LONGITUDE));
-                        lahan.put(TAG_KEY_SISA_KAPASITAS_MOBIL, item.getString(TAG_KEY_SISA_KAPASITAS_MOBIL));
-                        lahan.put(TAG_KEY_MAX_KAPASITAS_MOBIL, item.getString(TAG_KEY_MAX_KAPASITAS_MOBIL));
-                        lahan.put(TAG_KEY_MAX_KAPASITAS_MOTOR, item.getString(TAG_KEY_MAX_KAPASITAS_MOTOR));
-                        lahan.put(TAG_KEY_JAM_BUKA, item.getString(TAG_KEY_JAM_BUKA));
-                        lahan.put(TAG_KEY_JAM_TUTUP, item.getString(TAG_KEY_JAM_TUTUP));
-                        lahan.put(TAG_KEY_LINK_GAMBAR, item.getString(TAG_KEY_LINK_GAMBAR));
+                        lahan.put(AppConfig.TAG_KEY_ID_LAHAN, item.getString(AppConfig.TAG_KEY_ID_LAHAN));
+                        lahan.put(AppConfig.TAG_KEY_DESKRIPSI, item.getString(AppConfig.TAG_KEY_DESKRIPSI));
+                        lahan.put(AppConfig.TAG_KEY_ALIAS, item.getString(AppConfig.TAG_KEY_ALIAS));
+                        lahan.put(AppConfig.TAG_KEY_LATITUDE, item.getString(AppConfig.TAG_KEY_LATITUDE));
+                        lahan.put(AppConfig.TAG_KEY_LONGITUDE, item.getString(AppConfig.TAG_KEY_LONGITUDE));
+                        lahan.put(AppConfig.TAG_KEY_SISA_KAPASITAS_MOBIL, item.getString(AppConfig.TAG_KEY_SISA_KAPASITAS_MOBIL));
+                        lahan.put(AppConfig.TAG_KEY_MAX_KAPASITAS_MOBIL, item.getString(AppConfig.TAG_KEY_MAX_KAPASITAS_MOBIL));
+                        lahan.put(AppConfig.TAG_KEY_MAX_KAPASITAS_MOTOR, item.getString(AppConfig.TAG_KEY_MAX_KAPASITAS_MOTOR));
+                        lahan.put(AppConfig.TAG_KEY_JAM_BUKA, item.getString(AppConfig.TAG_KEY_JAM_BUKA));
+                        lahan.put(AppConfig.TAG_KEY_JAM_TUTUP, item.getString(AppConfig.TAG_KEY_JAM_TUTUP));
+                        lahan.put(AppConfig.TAG_KEY_LINK_GAMBAR, item.getString(AppConfig.TAG_KEY_LINK_GAMBAR));
 
                         parkingLotArrayList.add(lahan);
                     }
@@ -160,7 +146,7 @@ public class HomeActivity extends AppCompatActivity {
                     gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            Toast.makeText(getApplicationContext(), "You Clicked at " + parkingLotArrayList.get(position).get(TAG_KEY_ALIAS), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "You Clicked at " + parkingLotArrayList.get(position).get(AppConfig.TAG_KEY_ALIAS), Toast.LENGTH_SHORT).show();
                             HashMap<String, String> selectedLot = parkingLotArrayList.get(position);
                             Intent intent = new Intent(HomeActivity.this, DetailHomeActivity.class);
                             intent.putExtra("selectedLot", selectedLot);

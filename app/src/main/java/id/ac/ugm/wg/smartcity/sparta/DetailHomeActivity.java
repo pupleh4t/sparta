@@ -23,6 +23,7 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import id.ac.ugm.wg.smartcity.sparta.app.AppConfig;
 import id.ac.ugm.wg.smartcity.sparta.app.AppController;
 
 public class DetailHomeActivity extends AppCompatActivity {
@@ -31,19 +32,6 @@ public class DetailHomeActivity extends AppCompatActivity {
     TextView TVDepartment, TVFreeCarSpace, TVMaxCarSpace, TVOpenAt, TVCloseAt;
     ImageView SIVcover;
     ImageLoader imageLoader = AppController.getInstance().getImageLoader();
-
-    private static final String TAG_KEY_ID_LAHAN = "id_lahan";
-    private static final String TAG_KEY_DESKRIPSI = "deskripsi";
-    private static final String TAG_KEY_ALIAS = "alias";
-    private static final String TAG_KEY_LATITUDE = "latitude";
-    private static final String TAG_KEY_LONGITUDE = "longitude";
-    private static final String TAG_KEY_SISA_KAPASITAS_MOBIL = "sisa_kapasitas_mobil";
-    //private static final String TAG_KEY_SISA_KAPASITAS_MOTOR = "sisa_kapasitas_mobil";
-    private static final String TAG_KEY_MAX_KAPASITAS_MOBIL = "max_kapasitas_mobil";
-    private static final String TAG_KEY_MAX_KAPASITAS_MOTOR = "max_kapasitas_motor";
-    private static final String TAG_KEY_JAM_BUKA = "jam_buka";
-    private static final String TAG_KEY_JAM_TUTUP = "jam_tutup";
-    private static final String TAG_KEY_LINK_GAMBAR = "link_gambar";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,14 +50,14 @@ public class DetailHomeActivity extends AppCompatActivity {
         TVCloseAt = (TextView)findViewById(R.id.TVCloseAt);
         SIVcover = (ImageView)findViewById(R.id.SIVcover);
 
-        TVDepartment.setText(selectedData.get(TAG_KEY_DESKRIPSI));
-        TVFreeCarSpace.setText(new StringBuilder(selectedData.get(TAG_KEY_SISA_KAPASITAS_MOBIL) + " car parking space available"));
-        TVMaxCarSpace.setText(new StringBuilder(selectedData.get(TAG_KEY_MAX_KAPASITAS_MOBIL) + " slots capacity"));
-        TVOpenAt.setText(new StringBuilder(selectedData.get(TAG_KEY_JAM_BUKA) + " WIB"));
-        TVCloseAt.setText(new StringBuilder(selectedData.get(TAG_KEY_JAM_TUTUP) + " WIB"));
+        TVDepartment.setText(selectedData.get(AppConfig.TAG_KEY_DESKRIPSI));
+        TVFreeCarSpace.setText(new StringBuilder(selectedData.get(AppConfig.TAG_KEY_SISA_KAPASITAS_MOBIL) + " car parking space available"));
+        TVMaxCarSpace.setText(new StringBuilder(selectedData.get(AppConfig.TAG_KEY_MAX_KAPASITAS_MOBIL) + " slots capacity"));
+        TVOpenAt.setText(new StringBuilder(selectedData.get(AppConfig.TAG_KEY_JAM_BUKA) + " WIB"));
+        TVCloseAt.setText(new StringBuilder(selectedData.get(AppConfig.TAG_KEY_JAM_TUTUP) + " WIB"));
 
         if(imageLoader == null){imageLoader = AppController.getInstance().getImageLoader();}
-        String url = selectedData.get(TAG_KEY_LINK_GAMBAR);
+        String url = selectedData.get(AppConfig.TAG_KEY_LINK_GAMBAR);
         imageLoader.get(url, new ImageLoader.ImageListener() {
             @Override
             public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
@@ -86,22 +74,14 @@ public class DetailHomeActivity extends AppCompatActivity {
         });
 
         CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout)findViewById(R.id.collapsing_toolbar);
-        collapsingToolbarLayout.setTitle(selectedData.get(TAG_KEY_ALIAS));
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        collapsingToolbarLayout.setTitle(selectedData.get(AppConfig.TAG_KEY_ALIAS));
 
         BTNOpenMap = (Button) findViewById(R.id.BTNOpenMap);
         BTNOpenMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(DetailHomeActivity.this, ParkNowActivity.class);
+                intent.putExtra("selectedLot", selectedData);
                 startActivity(intent);
             }
         });

@@ -15,78 +15,112 @@
         android:theme="@style/AppTheme.AppBarOverlay"
         android:visibility="gone">
     </android.support.design.widget.AppBarLayout>
-    <RelativeLayout
+
+    <com.sothree.slidinguppanel.SlidingUpPanelLayout
+        xmlns:sothree="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/sliding_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        sothree:umanoPanelHeight="100dp"
+        sothree:umanoShadowHeight="4dp">
+
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_margin="16dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Choose a Destination"
-                android:layout_centerHorizontal="true"
-                android:textSize="34sp"
-                android:textColor="@color/text_white"
-                android:fontFamily="sans-serif-light"
-                android:paddingTop="48dp"
-                android:id="@+id/title"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="a name of faculty, department, or a room"
-                android:textColor="@color/text_white"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@+id/title"
-                android:paddingTop="8dp"
-                android:id="@+id/SubTitle"/>
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/TILplace"
-                android:layout_height="wrap_content"
-                android:layout_width="fill_parent"
-                android:layout_below="@+id/SubTitle"
-                android:paddingTop="10dp"
-                android:paddingEnd="15dp"
-                android:paddingStart="15dp"
-                android:textColorHint="@color/text_white"
-                >
-                <!--<EditText
-                    android:id="@+id/ETplace"
-                    android:layout_width="fill_parent"
+            android:layout_height="match_parent">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_margin="16dp">
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="Enter a name of place"
-                    android:inputType="text"
-                    android:textSize="14sp"
+                    android:text="Choose a Destination"
+                    android:layout_centerHorizontal="true"
+                    android:textSize="34sp"
                     android:textColor="@color/text_white"
-                    android:textColorHint="@color/text_white"
-                    android:backgroundTint="@color/text_white"
-                    android:padding="10dp"
-                    android:singleLine="true"
-                    android:drawableStart="@drawable/ic_logo_place"
-                    />-->
-                <id.ac.ugm.wg.smartcity.sparta.widgets.DelayAutoCompleteTextView
-                    android:layout_width="fill_parent"
+                    android:fontFamily="sans-serif-light"
+                    android:paddingTop="48dp"
+                    android:id="@+id/title"/>
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/ETplace"
-                    android:imeOptions="flagNoExtractUi|actionSearch"
-                    android:inputType="textCapSentences"
+                    android:text="a name of faculty, department, or a room"
                     android:textColor="@color/text_white"
-                    android:layout_gravity="center_vertical"
-                    android:hint="Enter a name of a place"
-                    android:padding="10dp"
-                    android:dropDownWidth="fill_parent"
-                    android:drawableStart="@drawable/ic_logo_place"
-                    />
-            </android.support.design.widget.TextInputLayout>
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/title"
+                    android:paddingTop="8dp"
+                    android:id="@+id/SubTitle"/>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp"
+                    android:layout_below="@+id/SubTitle">
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/TILplace2"
+                        android:layout_height="wrap_content"
+                        android:layout_width="fill_parent"
+                        android:textColorHint="@color/text_white"
+                        android:visibility="gone"
+                        android:layout_toStartOf="@+id/btnSwap"
+                        >
+                        <id.ac.ugm.wg.smartcity.sparta.widgets.DelayAutoCompleteTextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/ETplace2"
+                            android:imeOptions="flagNoExtractUi|actionSearch"
+                            android:inputType="textCapSentences"
+                            android:textColor="@color/text_white"
+                            android:layout_gravity="center_vertical"
+                            android:hint="Enter a name of a department"
+                            android:padding="10dp"
+                            android:dropDownWidth="fill_parent"
+                            android:drawableStart="@drawable/ic_logo_sparta"
+                            />
+                    </android.support.design.widget.TextInputLayout>
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/TILplace"
+                        android:layout_height="wrap_content"
+                        android:layout_width="fill_parent"
+                        android:textColorHint="@color/text_white"
+                        android:visibility="visible"
+                        android:layout_toStartOf="@+id/btnSwap"
+                        >
+                        <id.ac.ugm.wg.smartcity.sparta.widgets.DelayAutoCompleteTextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/ETplace"
+                            android:imeOptions="flagNoExtractUi|actionSearch"
+                            android:inputType="textCapSentences"
+                            android:textColor="@color/text_white"
+                            android:layout_gravity="center_vertical"
+                            android:hint="Enter a name of a place"
+                            android:padding="10dp"
+                            android:dropDownWidth="fill_parent"
+                            android:drawableStart="@drawable/ic_logo_place"
+                            />
+                    </android.support.design.widget.TextInputLayout>
+                    <ImageButton
+                        android:id="@+id/btnSwap"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/ic_logo_swap"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="26dp"
+                        android:background="@android:color/transparent"
+                        />
+                </RelativeLayout>
+            </RelativeLayout>
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_marginTop="232dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
         </RelativeLayout>
-        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_marginTop="232dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </RelativeLayout>
+
+        <include layout="@layout/sliding_panel_window"/>
+    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -99,47 +133,23 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_logo_metamorph"
             app:backgroundTint="@color/accent"
-            android:layout_marginStart="@dimen/fab_margin"
-            android:layout_marginTop="@dimen/fab_margin"
-            android:layout_marginEnd="72dp"
-            app:fabSize="mini"/>
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fabLocateMe"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_logo_definelocation"
-            app:backgroundTint="@color/accent"
-            android:layout_marginEnd="@dimen/fab_margin"
-            android:layout_marginTop="@dimen/fab_margin"
-            android:layout_marginBottom="@dimen/fab_margin"
-            android:layout_marginStart="72dp"
+            android:layout_margin="@dimen/fab_margin"
             app:fabSize="mini"/>
     </RelativeLayout>
+
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_behavior="id.ac.ugm.wg.smartcity.sparta.behaviors.ReactiveToSlidingUpPanel"
         app:layout_anchor="@id/map"
         app:layout_anchorGravity="bottom|end">
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
+            android:id="@+id/fabPark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:backgroundTint="@color/accent"
             android:src="@drawable/ic_logo_car"
-            android:layout_marginRight="@dimen/fab_margin"
-            android:layout_marginLeft="@dimen/fab_margin"
-            android:layout_marginBottom="@dimen/fab_margin"
-            android:layout_marginTop="88dp"/>
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_logo_motor"
-            app:backgroundTint="@color/accent"
-            android:layout_marginRight="@dimen/fab_margin"
-            android:layout_marginTop="@dimen/fab_margin"
-            android:layout_marginLeft="@dimen/fab_margin"
-            android:layout_marginBottom="88dp"/>
+            android:layout_margin="@dimen/fab_margin"/>
     </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>
 

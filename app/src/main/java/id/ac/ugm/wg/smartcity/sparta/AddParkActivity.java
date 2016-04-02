@@ -46,8 +46,10 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -79,6 +81,10 @@ public class AddParkActivity extends AppCompatActivity implements OnMapReadyCall
     private static String TAG_BALLOON_LATITUDE = "Latitude : ";
     private static String TAG_BALLOON_LONGITUDE = "Longitude : ";
 
+//    private SlidingUpPanelLayout slidingLayout;
+//    private TextView HeaderTVDepartmentName, HeaderTVSpaceLecturers, HeaderTVStudents, HeaderTVDistance;
+//    private TextView BodyTVDepartmentName, BodyTVFreeParkingSpace, BodyTVMaxParkingSpace, BodyTVOpenAt, BodyTVCloseAt;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,37 +92,52 @@ public class AddParkActivity extends AppCompatActivity implements OnMapReadyCall
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+//        slidingLayout = (SlidingUpPanelLayout)findViewById(R.id.sliding_layout);
+//        HeaderTVDepartmentName = (TextView)findViewById(R.id.TVDepartmentNameHeader);
+//        HeaderTVSpaceLecturers = (TextView)findViewById(R.id.TVCapacityLecturers);
+//        HeaderTVStudents = (TextView)findViewById(R.id.TVCapacityStudents);
+//        HeaderTVDistance = (TextView)findViewById(R.id.TVDistance);
+//        BodyTVDepartmentName = (TextView)findViewById(R.id.TVDepartmentName);
+//        BodyTVFreeParkingSpace = (TextView)findViewById(R.id.TVFreeParkingSpace);
+//        BodyTVMaxParkingSpace = (TextView)findViewById(R.id.TVMaxParkingSpace);
+//        BodyTVOpenAt = (TextView)findViewById(R.id.TVOpenAt);
+//        BodyTVCloseAt = (TextView)findViewById(R.id.TVCloseAt);
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         FloatingActionButton fabMetamorphose = (FloatingActionButton) findViewById(R.id.fabChange);
-        fabMetamorphose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                switch (mMap.getMapType()) {
-                    case GoogleMap.MAP_TYPE_NORMAL:
-                        mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-                        PopUpSnackBarMetamorphose(view, "Satellite Map");
-                        break;
-                    case GoogleMap.MAP_TYPE_SATELLITE:
-                        mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-                        PopUpSnackBarMetamorphose(view, "Hybrid Map");
-                        break;
-                    case GoogleMap.MAP_TYPE_HYBRID:
-                        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-                        PopUpSnackBarMetamorphose(view, "Normal Map");
-                        break;
+        if (fabMetamorphose != null) {
+            fabMetamorphose.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    switch (mMap.getMapType()) {
+                        case GoogleMap.MAP_TYPE_NORMAL:
+                            mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                            PopUpSnackBarMetamorphose(view, "Satellite Map");
+                            break;
+                        case GoogleMap.MAP_TYPE_SATELLITE:
+                            mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+                            PopUpSnackBarMetamorphose(view, "Hybrid Map");
+                            break;
+                        case GoogleMap.MAP_TYPE_HYBRID:
+                            mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                            PopUpSnackBarMetamorphose(view, "Normal Map");
+                            break;
+                    }
                 }
-            }
-        });
+            });
+        }
         FloatingActionButton fabCurrentLocation = (FloatingActionButton) findViewById(R.id.fabLocateMe);
-        fabCurrentLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                goToCurrentLocation(view);
-            }
-        });
+        if (fabCurrentLocation != null) {
+            fabCurrentLocation.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    goToCurrentLocation(view);
+                }
+            });
+        }
 
         ETid_lahan = (EditText)findViewById(R.id.ETid);
         ETpoints = (EditText)findViewById(R.id.ETpoints);
@@ -147,6 +168,33 @@ public class AddParkActivity extends AppCompatActivity implements OnMapReadyCall
                 .addOnConnectionFailedListener(this)
                 .build();
         mGoogleApiClient.connect();
+
+//        slidingLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+//            @Override
+//            public void onPanelSlide(View panel, float slideOffset) {
+//
+//            }
+//
+//            @Override
+//            public void onPanelCollapsed(View panel) {
+//
+//            }
+//
+//            @Override
+//            public void onPanelExpanded(View panel) {
+//
+//            }
+//
+//            @Override
+//            public void onPanelAnchored(View panel) {
+//
+//            }
+//
+//            @Override
+//            public void onPanelHidden(View panel) {
+//
+//            }
+//        });
     }
 
     @Override
@@ -158,13 +206,6 @@ public class AddParkActivity extends AppCompatActivity implements OnMapReadyCall
             return;
         }
         mMap.setInfoWindowAdapter(new AddParkInfoWindowAdapter());
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(final Marker marker) {
-                marker.showInfoWindow();
-                return false;
-            }
-        });
         mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
             @Override
             public void onMarkerDragStart(Marker marker) {
