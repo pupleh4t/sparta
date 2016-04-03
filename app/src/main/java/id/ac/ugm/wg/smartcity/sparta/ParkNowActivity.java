@@ -61,14 +61,13 @@ import java.util.List;
 import java.util.Locale;
 
 import id.ac.ugm.wg.smartcity.sparta.app.AppConfig;
-import id.ac.ugm.wg.smartcity.sparta.helper.DepartmentAutoCompleteAdapter;
-import id.ac.ugm.wg.smartcity.sparta.helper.JsonMapper;
+import id.ac.ugm.wg.smartcity.sparta.helper.adapters.DepartmentAutoCompleteAdapter;
 import id.ac.ugm.wg.smartcity.sparta.helper.LatLngSphericalTools;
 import id.ac.ugm.wg.smartcity.sparta.helper.MapStateManager;
 import id.ac.ugm.wg.smartcity.sparta.app.AppController;
 import id.ac.ugm.wg.smartcity.sparta.widgets.DelayAutoCompleteTextView;
-import id.ac.ugm.wg.smartcity.sparta.helper.GeoAutoCompleteAdapter;
-import id.ac.ugm.wg.smartcity.sparta.helper.GeoSearchResult;
+import id.ac.ugm.wg.smartcity.sparta.helper.adapters.GeoAutoCompleteAdapter;
+import id.ac.ugm.wg.smartcity.sparta.helper.adapters.GeoSearchResult;
 
 // ToDo : Fitur cari lokasi departement (AutoCompleteTextView dkk)
 

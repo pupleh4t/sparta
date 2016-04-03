@@ -16,10 +16,8 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import java.util.HashMap;
 
 import id.ac.ugm.wg.smartcity.sparta.app.AppConfig;
-import id.ac.ugm.wg.smartcity.sparta.helper.DepartmentAutoCompleteAdapter;
+import id.ac.ugm.wg.smartcity.sparta.helper.adapters.DepartmentAutoCompleteAdapter;
 import id.ac.ugm.wg.smartcity.sparta.widgets.DelayAutoCompleteTextView;
-import id.ac.ugm.wg.smartcity.sparta.helper.GeoAutoCompleteAdapter;
-import id.ac.ugm.wg.smartcity.sparta.helper.GeoSearchResult;
 
 public class TestActivity extends AppCompatActivity {
     private static String TAG = "Debug";

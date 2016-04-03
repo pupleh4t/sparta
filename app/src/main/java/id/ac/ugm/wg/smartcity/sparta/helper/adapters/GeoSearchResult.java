@@ -1,4 +1,4 @@
-package id.ac.ugm.wg.smartcity.sparta.helper;
+package id.ac.ugm.wg.smartcity.sparta.helper.adapters;
 
 import android.location.Address;
 

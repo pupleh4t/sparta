@@ -1,22 +1,15 @@
 package id.ac.ugm.wg.smartcity.sparta;
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -40,27 +33,22 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.StringTokenizer;
-
-import javax.microedition.khronos.egl.EGLDisplay;
 
 import id.ac.ugm.wg.smartcity.sparta.app.AppConfig;
 import id.ac.ugm.wg.smartcity.sparta.app.AppController;
+import id.ac.ugm.wg.smartcity.sparta.helper.DirectionTools;
 import id.ac.ugm.wg.smartcity.sparta.helper.MapStateManager;
 
 public class AddParkActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
@@ -168,33 +156,6 @@ public class AddParkActivity extends AppCompatActivity implements OnMapReadyCall
                 .addOnConnectionFailedListener(this)
                 .build();
         mGoogleApiClient.connect();
-
-//        slidingLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
-//            @Override
-//            public void onPanelSlide(View panel, float slideOffset) {
-//
-//            }
-//
-//            @Override
-//            public void onPanelCollapsed(View panel) {
-//
-//            }
-//
-//            @Override
-//            public void onPanelExpanded(View panel) {
-//
-//            }
-//
-//            @Override
-//            public void onPanelAnchored(View panel) {
-//
-//            }
-//
-//            @Override
-//            public void onPanelHidden(View panel) {
-//
-//            }
-//        });
     }
 
     @Override
@@ -301,6 +262,68 @@ public class AddParkActivity extends AppCompatActivity implements OnMapReadyCall
             markerOptions.title("End Marker");
         }
         markers.add(mMap.addMarker(markerOptions));
+
+        // Calculate Distance
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(getApplicationContext(), "Access location permission is denied", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if(lastLocation==null){
+            Toast.makeText(getApplicationContext(), "Location services are not enabled", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            LatLng currentLatLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
+            LatLng destinationLatLng = latLng;
+
+            String key = getResources().getString(R.string.google_directions_key);
+            DirectionTools directionTools = new DirectionTools();
+            String url = directionTools.makeURL(currentLatLng, destinationLatLng, key);
+            JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    DirectionTools directionToolstemp = new DirectionTools();
+                    List<List<HashMap<String, String>>> routes = directionToolstemp.parseRoutes(response);
+                    PolylineOptions polyLineOptions;
+                    int counterRoutes = 0;
+                    int alpha = 255;
+                    // traversing through routes
+                    for (int i = 0; i < routes.size(); i++) {
+                        ArrayList<LatLng> points = new ArrayList<LatLng>();
+                        polyLineOptions = new PolylineOptions();
+                        List<HashMap<String, String>> path = routes.get(i);
+
+                        for (int j = 0; j < path.size(); j++) {
+                            HashMap<String, String> point = path.get(j);
+
+                            double lat = Double.parseDouble(point.get("lat"));
+                            double lng = Double.parseDouble(point.get("lng"));
+                            LatLng position = new LatLng(lat, lng);
+
+                            points.add(position);
+                        }
+
+                        polyLineOptions.addAll(points);
+                        polyLineOptions.width(10);
+                        polyLineOptions.color(Color.BLUE);
+                        polyLineOptions.geodesic(true);
+                        if(counterRoutes>0){
+                            alpha -= 80;
+                            polyLineOptions.color(Color.argb(alpha, 121, 85, 72));
+                        }
+                        mMap.addPolyline(polyLineOptions);
+                        counterRoutes++;
+                    }
+                    Toast.makeText(getApplicationContext(), response.toString(), Toast.LENGTH_SHORT).show();
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                }
+            });
+            AppController.getInstance().addToRequestQueue(req);
+        }
     }
 
     private void removeMarkers(){

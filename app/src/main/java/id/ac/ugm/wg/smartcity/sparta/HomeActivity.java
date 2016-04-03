@@ -2,11 +2,9 @@ package id.ac.ugm.wg.smartcity.sparta;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.pm.InstrumentationInfo;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -32,7 +30,7 @@ import id.ac.ugm.wg.smartcity.sparta.app.AppController;
 import id.ac.ugm.wg.smartcity.sparta.helper.SQLiteHandler;
 import id.ac.ugm.wg.smartcity.sparta.helper.SessionManager;
 import id.ac.ugm.wg.smartcity.sparta.widgets.CustomGridView;
-import id.ac.ugm.wg.smartcity.sparta.helper.GridAdapter;
+import id.ac.ugm.wg.smartcity.sparta.helper.adapters.GridAdapter;
 
 public class HomeActivity extends AppCompatActivity {
     CollapsingToolbarLayout collapsingToolbar;

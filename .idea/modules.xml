@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Sparta.iml" filepath="$PROJECT_DIR$/Sparta.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sparta.iml" filepath="$PROJECT_DIR$/sparta.iml" />
     </modules>
   </component>
 </project>
