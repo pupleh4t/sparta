@@ -72,37 +72,61 @@ public class DirectionTools {
         return routes;
     }
 
-    public List<List<String>> parseIntructions(JSONObject jObject) {
-        List<List<String>> routes = new ArrayList<>();
+    public List<List<HashMap<String,String>>> parseIntructions(JSONObject jObject) {
+        List<List<HashMap<String,String>>> instructions = new ArrayList<>();
         JSONArray jRoutes = null;
         JSONArray jLegs = null;
         JSONArray jSteps = null;
+
         try {
             jRoutes = jObject.getJSONArray("routes");
             /** Traversing all routes */
             for (int i = 0; i < jRoutes.length(); i++) {
                 jLegs = jRoutes.getJSONObject(i).getJSONArray("legs");
-                List<String> path = new ArrayList<>();
-
                 /** Traversing all legs */
                 for (int j = 0; j < jLegs.length(); j++) {
+                    List<HashMap<String,String>> path = new ArrayList<>();
                     jSteps = jLegs.getJSONObject(j).getJSONArray("steps");
-
                     /** Traversing all steps */
                     for (int k = 0; k < jSteps.length(); k++) {
-                        String instruction = "";
-                        instruction = jSteps.getJSONObject(k).getString("html_instructions");
-                        path.add(instruction);
+                        HashMap<String,String> hashMap = new HashMap<>();
+                        hashMap.put("instruction", jSteps.getJSONObject(k).getString("html_instructions"));
+                        hashMap.put("duration", jSteps.getJSONObject(k).getJSONObject("duration").getString("text"));
+                        hashMap.put("distance", jSteps.getJSONObject(k).getJSONObject("distance").getString("text"));
+                        path.add(hashMap);
                     }
-                    routes.add(path);
+                    instructions.add(path);
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return routes;
+        return instructions;
     }
+
+    public List<HashMap<String, String>> parseDistanceDuration(JSONObject jObject) {
+        List<HashMap<String, String>> instructions = new ArrayList<>();
+        JSONArray jRoutes = null;
+        JSONArray jLegs = null;
+        try {
+            jRoutes = jObject.getJSONArray("routes");
+            /** Traversing all routes */
+            for (int i = 0; i < jRoutes.length(); i++) {
+                jLegs = jRoutes.getJSONObject(i).getJSONArray("legs");
+                for (int j = 0; j < jLegs.length(); j++){
+                    HashMap<String,String> legs = new HashMap<>();
+                    legs.put("distance", jLegs.getJSONObject(j).getJSONObject("distance").getString("text"));
+                    legs.put("duration", jLegs.getJSONObject(j).getJSONObject("duration").getString("text"));
+                    instructions.add(legs);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return instructions;
+    }
+
+
 
     /**
      * Method Courtesy :

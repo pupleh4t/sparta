@@ -56,7 +56,6 @@ public class AddParkActivity extends AppCompatActivity implements OnMapReadyCall
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private MapStateManager mgr;
-    private float zoomTemp = 0;
     private ArrayList<Marker> markers;
     private Marker userMarker;
     private ProgressDialog pDialog;
@@ -69,27 +68,12 @@ public class AddParkActivity extends AppCompatActivity implements OnMapReadyCall
     private static String TAG_BALLOON_LATITUDE = "Latitude : ";
     private static String TAG_BALLOON_LONGITUDE = "Longitude : ";
 
-//    private SlidingUpPanelLayout slidingLayout;
-//    private TextView HeaderTVDepartmentName, HeaderTVSpaceLecturers, HeaderTVStudents, HeaderTVDistance;
-//    private TextView BodyTVDepartmentName, BodyTVFreeParkingSpace, BodyTVMaxParkingSpace, BodyTVOpenAt, BodyTVCloseAt;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_park);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-//        slidingLayout = (SlidingUpPanelLayout)findViewById(R.id.sliding_layout);
-//        HeaderTVDepartmentName = (TextView)findViewById(R.id.TVDepartmentNameHeader);
-//        HeaderTVSpaceLecturers = (TextView)findViewById(R.id.TVCapacityLecturers);
-//        HeaderTVStudents = (TextView)findViewById(R.id.TVCapacityStudents);
-//        HeaderTVDistance = (TextView)findViewById(R.id.TVDistance);
-//        BodyTVDepartmentName = (TextView)findViewById(R.id.TVDepartmentName);
-//        BodyTVFreeParkingSpace = (TextView)findViewById(R.id.TVFreeParkingSpace);
-//        BodyTVMaxParkingSpace = (TextView)findViewById(R.id.TVMaxParkingSpace);
-//        BodyTVOpenAt = (TextView)findViewById(R.id.TVOpenAt);
-//        BodyTVCloseAt = (TextView)findViewById(R.id.TVCloseAt);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);

@@ -12,12 +12,16 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
+import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -49,6 +53,8 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.json.JSONArray;
@@ -61,15 +67,16 @@ import java.util.List;
 import java.util.Locale;
 
 import id.ac.ugm.wg.smartcity.sparta.app.AppConfig;
+import id.ac.ugm.wg.smartcity.sparta.helper.DirectionTools;
 import id.ac.ugm.wg.smartcity.sparta.helper.adapters.DepartmentAutoCompleteAdapter;
 import id.ac.ugm.wg.smartcity.sparta.helper.LatLngSphericalTools;
 import id.ac.ugm.wg.smartcity.sparta.helper.MapStateManager;
 import id.ac.ugm.wg.smartcity.sparta.app.AppController;
+import id.ac.ugm.wg.smartcity.sparta.helper.adapters.DirectionInstructions;
+import id.ac.ugm.wg.smartcity.sparta.helper.adapters.DirectionInstructionsAdapter;
 import id.ac.ugm.wg.smartcity.sparta.widgets.DelayAutoCompleteTextView;
 import id.ac.ugm.wg.smartcity.sparta.helper.adapters.GeoAutoCompleteAdapter;
 import id.ac.ugm.wg.smartcity.sparta.helper.adapters.GeoSearchResult;
-
-// ToDo : Fitur cari lokasi departement (AutoCompleteTextView dkk)
 
 public class ParkNowActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private static final String TAGi = "INFO";
@@ -85,10 +92,10 @@ public class ParkNowActivity extends FragmentActivity implements OnMapReadyCallb
     private float zoomTemp;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
-    private Marker marker, markerDraggable;
+    private Marker marker, selectedSlotMarker;
     private ProgressDialog pDialog;
     private ArrayList<HashMap<String,String>> slotList;
-    private ArrayList<LatLng> AreaLatLngArrayList = new ArrayList<>();
+    private ArrayList<Polyline> directionPolylineArrayList = new ArrayList<>();
 
     private HashMap<String,String> selectedData;
     private ArrayList<Marker> slotMarkerArrayList = new ArrayList<>();
@@ -98,9 +105,14 @@ public class ParkNowActivity extends FragmentActivity implements OnMapReadyCallb
     private Circle circleDepartment;
 
     private SlidingUpPanelLayout slidingUpPanelLayout;
-    private TextView TVHeaderDepartmentName, TVHeaderCarCapacityLecturers, TVHeaderCarCapacityStudents, TVHeaderDistance;
+    private RelativeLayout summarySlidingLayout, directionSlidingLayout;
+    private TextView TVHeaderDepartmentName, TVHeaderCarCapacityLecturers, TVHeaderCarCapacityStudents, TVHeaderDistance, TVSlotHeaderDepartmentName, TVSlotHeaderNumber, TVSlotHeaderDistance, TVSlotHeaderDuration;
     private TextView TVBodyDepartmentName, TVBodyCarCapacityLecturers, TVBodyCarMaxCapacityLecturers, TVBodyOpenAt, TVBodyCloseAt;
     private FloatingActionButton fab, fabMetamorphose;
+
+    private RecyclerView recyclerViewInstructions;
+    private DirectionInstructionsAdapter directionInstructionsAdapter;
+    private List<DirectionInstructions> directionInstructionsList = new ArrayList<>();
 
     private static String TAG_REQUEST_SLOT = "slot_request";
 
@@ -117,16 +129,23 @@ public class ParkNowActivity extends FragmentActivity implements OnMapReadyCallb
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Geocoder gc = new Geocoder(getApplicationContext());
-                Address address = new Address(Locale.getDefault());
-                address.setCountryName("id = 12");
-                address.setLatitude(-7.765808);
-                address.setLongitude(110.371645);
-                address.setLocality("Vacant");
-                setMarkerDraggable(address.getLocality(), address.getCountryName(), address.getLatitude(), address.getLongitude());
-
+                String status = selectedSlotMarker.getSnippet();
+                if(status.equals("FREE")){
+                    //routeToSlot(selectedSlotMarker.getPosition());
+                    String label = selectedData.get(AppConfig.TAG_KEY_ALIAS) + ", Slot : " + selectedSlotMarker.getTitle();
+                    final String uri = String.format(Locale.ENGLISH, "geo:0,0?q=") + android.net.Uri.encode(String.format("%s@%f,%f", label, selectedSlotMarker.getPosition().latitude, selectedSlotMarker.getPosition().longitude), "UTF-8");
+                    final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                    startActivity(intent);
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Sorry, this slot is vacant", Toast.LENGTH_SHORT).show();
+                    slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+                }
             }
         });
+
+        summarySlidingLayout = (RelativeLayout)findViewById(R.id.RLsummarySliding);
+        directionSlidingLayout = (RelativeLayout)findViewById(R.id.RLdirectionsSliding);
 
         fabMetamorphose = (FloatingActionButton) findViewById(R.id.fabChange);
         fabMetamorphose.setOnClickListener(new View.OnClickListener() {
@@ -149,20 +168,36 @@ public class ParkNowActivity extends FragmentActivity implements OnMapReadyCallb
             }
         });
 
+        // ToDo : Sliding panel listener
         slidingUpPanelLayout = (SlidingUpPanelLayout)findViewById(R.id.sliding_layout);
         slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
         slidingUpPanelLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
-                fab.hide();
-                fabMetamorphose.hide();
+                if (mMap.getCameraPosition().zoom >= 19) {
+
+                } else {
+                    if (fabMetamorphose.getVisibility() == View.VISIBLE) {
+                        fabMetamorphose.hide();
+                    }
+                }
             }
 
             @Override
             public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
                 if (newState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
-                    fab.show();
-                    fabMetamorphose.show();
+                    if (mMap.getCameraPosition().zoom >= 19) {
+
+                    } else {
+                        if (fabMetamorphose.getVisibility() == View.GONE) {
+                            fabMetamorphose.show();
+                        }
+                    }
+                    if (newState == SlidingUpPanelLayout.PanelState.HIDDEN) {
+                        if (fabMetamorphose.getVisibility() == View.GONE) {
+                            fabMetamorphose.show();
+                        }
+                    }
                 }
             }
         });
@@ -212,7 +247,7 @@ public class ParkNowActivity extends FragmentActivity implements OnMapReadyCallb
         ETplace2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String result = (String)parent.getItemAtPosition(position);
+                String result = (String) parent.getItemAtPosition(position);
                 String departmentName = result;
                 ETplace.setText(departmentName);
             }
@@ -232,11 +267,9 @@ public class ParkNowActivity extends FragmentActivity implements OnMapReadyCallb
                                 try {
                                     JSONArray jsonArray = response.getJSONArray("data");
                                     JSONObject jsonObject = jsonArray.getJSONObject(0);
-                                    Integer id_lahan = Integer.parseInt(jsonObject.getString(AppConfig.TAG_KEY_ID_LAHAN));
                                     Double lat = Double.parseDouble(jsonObject.getString(AppConfig.TAG_KEY_LONGITUDE));
                                     Double lng = Double.parseDouble(jsonObject.getString(AppConfig.TAG_KEY_LATITUDE));
                                     LatLng latLng = new LatLng(lat, lng);
-                                    // ToDo: new case from ETplace2
                                     CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(new CameraPosition(latLng, 18, 0, 0));
                                     mMap.animateCamera(cameraUpdate);
                                 } catch (Exception e) {
@@ -287,6 +320,18 @@ public class ParkNowActivity extends FragmentActivity implements OnMapReadyCallb
         TVBodyCarMaxCapacityLecturers = (TextView)findViewById(R.id.TVMaxParkingSpace);
         TVBodyOpenAt = (TextView)findViewById(R.id.TVOpenAt);
         TVBodyCloseAt = (TextView)findViewById(R.id.TVCloseAt);
+
+        TVSlotHeaderDepartmentName = (TextView)findViewById(R.id.TVSlotDepartmentNameHeader);
+        TVSlotHeaderNumber = (TextView)findViewById(R.id.TVSlotNumberHeader);
+        TVSlotHeaderDistance = (TextView)findViewById(R.id.TVSlotDistanceHeader);
+        TVSlotHeaderDuration = (TextView)findViewById(R.id.TVSlotDurationHeader);
+
+        directionInstructionsAdapter = new DirectionInstructionsAdapter(directionInstructionsList);
+        recyclerViewInstructions = (RecyclerView)findViewById(R.id.RVdirectionInstruction);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerViewInstructions.setLayoutManager(mLayoutManager);
+        recyclerViewInstructions.setItemAnimator(new DefaultItemAnimator());
+        recyclerViewInstructions.setAdapter(directionInstructionsAdapter);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -364,33 +409,45 @@ public class ParkNowActivity extends FragmentActivity implements OnMapReadyCallb
                 }
                 zoomTemp = Math.round(cameraPosition.zoom);
                 if (zoomTemp >= 19) {
-                    // ToDo : Block Code if Zoomed mode
+                    // ToDo : Zoomed mode
                     // Show All The slotMarkers
                     if (!canZoom) {
                         mMap.animateCamera(CameraUpdateFactory.zoomTo(18));
                         return;
                     }
                     if (slotList.size() == 0 && !startupMode) {
+                        // ToDo : Jika slot data ga ada dan bukan pas awal buka
+                        if(departmentMarkerArrayList.size()>0 || tempDepartmentArrayList.size()>0){
+                            for (Marker markerDepartment:departmentMarkerArrayList) {
+                                markerDepartment.remove();
+                            }
+                            departmentMarkerArrayList.clear();
+                            tempDepartmentArrayList.clear();
+                            slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+                        }
                         getSlotMarker(Integer.valueOf(tempDepartmentHashMap.get(AppConfig.TAG_KEY_ID_LAHAN)));
                     }
-                    slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
                     mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                         @Override
                         public boolean onMarkerClick(Marker marker) {
+                            selectedSlotMarker = marker;
+                            fab.show();
                             return false;
                         }
                     });
+                    summarySlidingLayout.setVisibility(View.GONE);
+                    directionSlidingLayout.setVisibility(View.VISIBLE);
                     mMap.setInfoWindowAdapter(new DetailInfoWindowAdapter());
-
+                    fab.show();
                 } else {
-                    // ToDo : Block Code if Non Zoomed mode
+                    // ToDo : Non Zoomed mode
                     if (slotList.size() > 0 || tempDepartmentArrayList == null) {
                         removeMarkerSlot();
+                        removeDirectionPolylines();
                         circleDepartment.remove();
                         getSummaryMarkers();
-                        if (canZoom) {
-                            canZoom = false;
-                        }
+                        canZoom = false;
+                        slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
                     }
                     mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                         @Override
@@ -401,9 +458,9 @@ public class ParkNowActivity extends FragmentActivity implements OnMapReadyCallb
                             for (int i = 0; i < departmentMarkerArrayList.size(); i++) {
                                 if (marker.getTitle().equals(tempDepartmentArrayList.get(i).get(AppConfig.TAG_KEY_ALIAS))) {
                                     tempDepartmentHashMap = tempDepartmentArrayList.get(i);
-                                    if (updateSlidingUpPanelLayout(tempDepartmentHashMap)) {
+                                    if (updateSummarySlidingUpPanelLayout(tempDepartmentHashMap)) {
                                         canZoom = true;
-                                        selectedData = null;
+                                        selectedData = tempDepartmentHashMap;
                                     }
                                 }
                             }
@@ -411,6 +468,9 @@ public class ParkNowActivity extends FragmentActivity implements OnMapReadyCallb
                         }
                     });
                     mMap.setInfoWindowAdapter(null);
+                    summarySlidingLayout.setVisibility(View.VISIBLE);
+                    directionSlidingLayout.setVisibility(View.GONE);
+                    fab.hide();
                 }
             }
         });
@@ -531,26 +591,7 @@ public class ParkNowActivity extends FragmentActivity implements OnMapReadyCallb
         marker = mMap.addMarker(options);
     }
 
-    private void setMarkerDraggable(String locality, String country, double lat, double lng) {
-        if(markerDraggable!=null){
-            markerDraggable.remove();
-        }
-
-        MarkerOptions options = new MarkerOptions()
-                .title(locality)
-                .position(new LatLng(lat, lng))
-                .draggable(true)
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-
-        if (country!=null){
-            options.snippet(country);
-        }
-
-        markerDraggable = mMap.addMarker(options);
-    }
-
     private void getSummaryMarkers(){
-        // ToDo : Selesaikan dulu bang
         showDialog();
         JsonObjectRequest getSummaryData = new JsonObjectRequest(AppConfig.URL_LAHAN_DATA, null, new Response.Listener<JSONObject>() {
             @Override
@@ -701,7 +742,7 @@ public class ParkNowActivity extends FragmentActivity implements OnMapReadyCallb
         AppController.getInstance().addToRequestQueue(req, TAG_REQUEST_SLOT);
     }
 
-    private boolean updateSlidingUpPanelLayout(HashMap<String, String> tempHashMap){
+    private boolean updateSummarySlidingUpPanelLayout(HashMap<String, String> tempHashMap){
         TVHeaderDepartmentName.setText(tempHashMap.get(AppConfig.TAG_KEY_DESKRIPSI));
         String textTemp = tempHashMap.get(AppConfig.TAG_KEY_SISA_KAPASITAS_MOBIL) + " OF " + tempHashMap.get(AppConfig.TAG_KEY_SISA_KAPASITAS_MOBIL);
         TVHeaderCarCapacityLecturers.setText(textTemp);
@@ -738,7 +779,46 @@ public class ParkNowActivity extends FragmentActivity implements OnMapReadyCallb
         TVBodyCarMaxCapacityLecturers.setText(new StringBuilder(tempHashMap.get(AppConfig.TAG_KEY_MAX_KAPASITAS_MOBIL) + " slots capacity"));
         TVBodyOpenAt.setText(new StringBuilder(tempHashMap.get(AppConfig.TAG_KEY_JAM_BUKA).substring(0, 5) + " Jakarta Time"));
         TVBodyCloseAt.setText(new StringBuilder(tempHashMap.get(AppConfig.TAG_KEY_JAM_TUTUP).substring(0, 5) + " Jakarta Time"));
+        return true;
+    }
 
+    private boolean routeToSlot(LatLng destLocation){
+        // Calculate Distance
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(getApplicationContext(), "Access location permission is denied", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if(lastLocation==null){
+            Toast.makeText(getApplicationContext(), "Location services are not enabled", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            LatLng currentLatLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
+            LatLng destinationLatLng = destLocation;
+
+            String key = getResources().getString(R.string.google_directions_key);
+            final DirectionTools directionTools = new DirectionTools();
+            String url = directionTools.makeURL(currentLatLng, destinationLatLng, key);
+            JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                    DirectionTools directionToolstemp = new DirectionTools();
+                    List<List<HashMap<String, String>>> routes = directionToolstemp.parseRoutes(response);
+                    drawRoutes(routes);
+
+                    List<List<HashMap<String, String>>> instructions = directionToolstemp.parseIntructions(response);
+                    List<HashMap<String,String>> distanceAndDuration = directionToolstemp.parseDistanceDuration(response);
+                    updateSlotSlidingUpPanelLayout(instructions, distanceAndDuration, selectedData.get(AppConfig.TAG_KEY_DESKRIPSI), selectedSlotMarker.getTitle());
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                }
+            });
+            AppController.getInstance().addToRequestQueue(req);
+        }
         return true;
     }
 
@@ -802,5 +882,71 @@ public class ParkNowActivity extends FragmentActivity implements OnMapReadyCallb
         v.layout(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
         v.draw(c);
         return b;
+    }
+
+    private void drawRoutes(List<List<HashMap<String,String>>> routes){
+        removeDirectionPolylines();
+        PolylineOptions polyLineOptions;
+        int alpha = 255;
+        // traversing through routes
+        for (int i = 0; i < routes.size(); i++) {
+            ArrayList<LatLng> points = new ArrayList<LatLng>();
+            polyLineOptions = new PolylineOptions();
+            List<HashMap<String, String>> path = routes.get(i);
+
+            for (int j = 0; j < path.size(); j++) {
+                HashMap<String, String> point = path.get(j);
+
+                double lat = Double.parseDouble(point.get("lat"));
+                double lng = Double.parseDouble(point.get("lng"));
+                LatLng position = new LatLng(lat, lng);
+
+                points.add(position);
+            }
+
+            polyLineOptions.addAll(points);
+            polyLineOptions.width(10);
+            polyLineOptions.color(Color.BLUE);
+            polyLineOptions.geodesic(true);
+            if(i>0){
+                alpha -= 80;
+                polyLineOptions.color(Color.argb(alpha, 121, 85, 72));
+            }
+            Polyline polyline = mMap.addPolyline(polyLineOptions);
+            directionPolylineArrayList.add(polyline);
+        }
+    }
+
+    private void removeDirectionPolylines(){
+        if (directionPolylineArrayList.size()>0){
+            for (Polyline polyline : directionPolylineArrayList){
+                polyline.remove();
+            }
+            directionPolylineArrayList.clear();
+        }
+    }
+
+    // ToDo : Update Slot Sliding Layout
+    private void updateSlotSlidingUpPanelLayout(List<List<HashMap<String,String>>> instructions, List<HashMap<String,String>> distanceAndDuration, String deptName, String id_slot){
+        // Ini pake recycler view ya
+        List<HashMap<String, String>> pathInstruction = instructions.get(0);
+        directionInstructionsList.clear();
+        for (int j = 0; j < pathInstruction.size(); j++) {
+            HashMap<String, String> data = pathInstruction.get(j);
+            String instruction = data.get("instruction");
+            instruction = android.text.Html.fromHtml(instruction).toString();
+            String distance = data.get("distance");
+            String duration = data.get("duration");
+            DirectionInstructions directionInstructions = new DirectionInstructions(instruction, duration, distance);
+            directionInstructionsList.add(directionInstructions);
+        }
+        directionInstructionsAdapter.notifyDataSetChanged();
+
+        // Ini di headingnya ntar
+        TVSlotHeaderDepartmentName.setText(deptName);
+        TVSlotHeaderNumber.setText(id_slot);
+        HashMap<String,String> pathDistanceDuration = distanceAndDuration.get(0);
+        TVSlotHeaderDistance.setText(pathDistanceDuration.get("distance"));
+        TVSlotHeaderDuration.setText(pathDistanceDuration.get("duration"));
     }
 }

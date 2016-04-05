@@ -118,8 +118,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </RelativeLayout>
-
-        <include layout="@layout/sliding_panel_window"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <RelativeLayout
+                android:id="@+id/RLsummarySliding"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+                <include layout="@layout/sliding_panel_window"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/RLdirectionsSliding"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+                <include layout="@layout/sliding_panel_directions"/>
+            </RelativeLayout>
+        </RelativeLayout>
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
     <RelativeLayout

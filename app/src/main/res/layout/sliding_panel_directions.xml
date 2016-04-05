@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusable="false"
+    android:id="@+id/dragView"
+    android:background="@color/md_blue_grey_50">
+    <!--Header Content-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/md_blue_grey_100">
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="100dp"
+                android:layout_toStartOf="@+id/DividerLine">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:layout_margin="10dp">
+                    <TextView
+                        android:id="@+id/TVSlotDepartmentNameHeader"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_centerHorizontal="true"
+                        android:text="Department of Electrical Engineering and Information Technology"
+                        android:textAlignment="center"
+                        android:ellipsize="end"
+                        android:textSize="20sp"
+                        android:textColor="@color/md_black_1000"
+                        android:singleLine="true"
+                        android:textStyle="bold"/>
+                </RelativeLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_alignParentBottom="true">
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.3">
+                        <TextView
+                            android:id="@+id/TVMiniHeadingDistance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:textStyle="bold"
+                            android:textSize="10sp"
+                            android:text="Total Distance"/>
+                        <TextView
+                            android:id="@+id/TVSlotDistanceHeader"
+                            android:layout_below="@+id/TVMiniHeadingDistance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:fontFamily="sans-serif-light"
+                            android:text="2.3 KM"/>
+                    </RelativeLayout>
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.3">
+                        <TextView
+                            android:id="@+id/TVMiniHeadingDuration"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:textStyle="bold"
+                            android:textSize="10sp"
+                            android:text="Total Duration"/>
+                        <TextView
+                            android:id="@+id/TVSlotDurationHeader"
+                            android:layout_below="@+id/TVMiniHeadingDuration"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:fontFamily="sans-serif-light"
+                            android:text="10 minutes"/>
+                    </RelativeLayout>
+                </LinearLayout>
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/DividerLine"
+                android:layout_width="2dp"
+                android:layout_height="80dp"
+                android:background="@color/accent"
+                android:layout_toStartOf="@+id/LLRightPanel"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                />
+            <RelativeLayout
+                android:id="@+id/LLRightPanel"
+                android:layout_width="60dp"
+                android:layout_height="80dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_margin="10dp">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Slot ID"
+                        android:textColor="@color/md_black_1000"/>
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp">
+                        <TextView
+                            android:id="@+id/TVSlotNumberHeader"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:textColor="@color/md_black_1000"
+                            android:textSize="20sp"
+                            android:text="20"/>
+                    </RelativeLayout>
+                </LinearLayout>
+            </RelativeLayout>
+        </RelativeLayout>
+    </LinearLayout>
+    <!--Body Content-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/RVdirectionInstruction"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"/>
+    </LinearLayout>
+
+</LinearLayout>
